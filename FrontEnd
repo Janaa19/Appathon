@@ -1,0 +1,156 @@
+//
+//  ContentView.swift
+//  FrontEnd App
+//
+//  Created by Jana Abed on 2/7/24.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @State private var isLogged: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            if isLogged {
+                RequestFeedView()
+                    .navigationTitle("Requests")
+                    .navigationBarItems(
+                        leading: NavigationLink(destination: MyRequestsView()) {
+                            Text("My Requests")
+                        },
+                        trailing: NavigationLink(destination: CreateRequestView()) {
+                            Text("Create a Request")
+                        }
+                    )
+            } else {
+                LoginView(isLogged: $isLogged)
+            }
+        }
+    }
+}
+
+struct LoginView: View {
+    @Binding var isLogged: Bool
+    @State private var username: String = ""
+    @State private var password: String = ""
+    
+    var body: some View {
+        VStack {
+            TextField("Username", text: $username)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            SecureField("Password", text: $password)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Button(action: {
+                // Perform login authentication
+                // For simplicity, let's assume the login is successful (TRUE)
+                isLogged = true
+            }) {
+                Text("Login")
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding()
+        }
+        .padding()
+        .navigationTitle("Login")
+    }
+}
+
+struct RequestFeedView: View {
+    // Mock data for DEMO
+    let requests = ["Request 1", "Request 2", "Request 3"]
+    
+    var body: some View {
+        List(requests, id: \.self) { request in
+            VStack(alignment: .leading) {
+                NavigationLink(destination: RequestInfoView(request: request)) {
+                    Text(request)
+                }
+                HStack {
+                    NavigationLink(destination: RequestInfoView(request: request)) {
+                        Text("Info")
+                            .padding(.horizontal)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    Button(action: {
+                        // Action to accept request
+                    }) {
+                        Text("Accept")
+                            .padding(.horizontal)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CreateRequestView: View {
+    @State private var requestText: String = ""
+    
+    var body: some View {
+        VStack {
+            TextField("Type your request", text: $requestText)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Button(action: {
+                // Action to submit the request
+                // This is where you'll handle sending the request to your backend
+                print("Request submitted: \(requestText)")
+            }) {
+                Text("Submit")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding()
+            
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Create a Request")
+    }
+}
+
+struct MyRequestsView: View {
+    var body: some View {
+        Text("My Requests Page")
+            .padding()
+            .navigationTitle("My Requests")
+    }
+}
+
+struct RequestInfoView: View {
+    var request: String
+    
+    var body: some View {
+        Text("Info for Request: \(request)")
+            .padding()
+            .navigationTitle("Request Info")
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+            #Preview {
+                ContentView()
+            }
+            
+        
